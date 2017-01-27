@@ -5,13 +5,16 @@ echo "*---------------------------------*"
 echo "| Interactive Repository Splitter |"
 echo "*---------------------------------*"
 echo
-echo "Provide the main repository git address :"
+echo "Provide the original git repository address :"
 read repo_address
+mkdir splitter_cache
+cd splitter_cache
 git clone "$repo_address"
 echo
-echo "Moving to cloned main repository"
+cd ..
 repo_name="$(basename "$repo_address")"
 repo_name="${repo_name::-4}"
+cp -r splitter_cache/$repo_name .
 cd "$repo_name"
 while true
 do
@@ -29,10 +32,14 @@ do
 	echo
 	echo "New repository created!"
 	echo
-	echo "Rebuilding main repository"
+	echo "Rebuilding original repository"
 	cd ..
 	rm -rf "$repo_name"
-	git clone "$repo_address"
+	cp -r splitter_cache/$repo_name .
 	cd "$repo_name"
 done
-echo "bye"
+echo "Cleaning"
+cd ..
+rm -rf "$repo_name"
+rm -rf splitter_cache
+echo "Bye!"
